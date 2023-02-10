@@ -1,0 +1,221 @@
+﻿<Window x:Class="MCISoundPlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MCISoundPlayer"
+        mc:Ignorable="d"
+        Title="MCISoundPlayer" Height="99" Width="800"
+        Background="AntiqueWhite">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenExecuted"/>
+    </Window.CommandBindings>
+    
+    <Window.Resources>
+        <local:MillisecondsConverter x:Key="millisecondsconverter"/>
+        <local:OneTenth x:Key="onetenth"/>
+
+        <Color x:Key="OverColor" A="255" R="100" G="0" B="0"/>
+        <Color x:Key="NormalColor" A="255" R="155" G="155" B="155"/>
+        <Color x:Key="PressedColor" A="255" R="50" G="0" B="0"/>
+        <Style TargetType="Slider">
+            <Style.Resources>
+                <SolidColorBrush x:Key="OverBrush"  Color="{StaticResource OverColor}"/>
+                <SolidColorBrush x:Key="NormalBrush" Color="{StaticResource NormalColor}"/>
+                <SolidColorBrush x:Key="PressedBrush" Color="{StaticResource PressedColor}"/>
+                
+            </Style.Resources>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="IsMoveToPointEnabled" Value="true"/>
+            <Setter Property="Height" Value="22"/>
+            <EventSetter Event="MouseMove" Handler="Slider_MouseMove"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Slider">
+                                <Track x:Name="PART_Track">
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton x:Name="PART_RBR" Command="Slider.IncreaseLarge" 
+                                                    SnapsToDevicePixels="True" OverridesDefaultStyle="True"
+                                                    IsTabStop="False" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border Background="{StaticResource NormalBrush}" Height="8"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.IncreaseRepeatButton>
+
+                                    <Track.Thumb>
+                                        <Thumb x:Name="SliderThumb" SnapsToDevicePixels="True" OverridesDefaultStyle="True"
+                                                                    Height="{TemplateBinding Height}">
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Ellipse Height="{TemplateBinding Height}" Width="{TemplateBinding Height}" Fill="{DynamicResource NormalBrush}">
+                                                        <VisualStateManager.VisualStateGroups>
+                                                            <VisualStateGroup x:Name="CommonStates">
+                                                                <VisualState x:Name="Normal">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                    Storyboard.TargetProperty="Fill.Color" To="{StaticResource OverColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="Pressed">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                    Storyboard.TargetProperty="Fill.Color" To="{StaticResource PressedColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="MouseOver">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                    Storyboard.TargetProperty="Fill.Color" To="{StaticResource OverColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="Disabled"/>
+                                                            </VisualStateGroup>
+                                                        </VisualStateManager.VisualStateGroups>
+                                                    </Ellipse>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton x:Name="PART_RBL" Command="Slider.DecreaseLarge" SnapsToDevicePixels="True" OverridesDefaultStyle="True" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border SnapsToDevicePixels="True" Background="{StaticResource OverBrush}" Height="8"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.DecreaseRepeatButton>
+                                </Track>
+
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Slider">
+                                <Track x:Name="PART_Track" >
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton x:Name="PART_RBR" Command="Slider.IncreaseLarge" SnapsToDevicePixels="True" OverridesDefaultStyle="True"
+                                                       IsTabStop="False" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border Background="{StaticResource NormalBrush}" Width="4"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.IncreaseRepeatButton>
+
+                                    <Track.Thumb>
+
+                                        <Thumb x:Name="SliderThumb" SnapsToDevicePixels="True" OverridesDefaultStyle="True"
+                                               >
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Ellipse Height="16" Width="16" Fill="{DynamicResource NormalBrush}">
+                                                        <VisualStateManager.VisualStateGroups>
+                                                            <VisualStateGroup x:Name="CommonStates">
+                                                                <VisualState x:Name="Normal">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                        Storyboard.TargetProperty="Fill.Color" To="{StaticResource NormalColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="Pressed">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                        Storyboard.TargetProperty="Fill.Color" To="{StaticResource PressedColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="MouseOver">
+                                                                    <Storyboard>
+                                                                        <ColorAnimation Duration="0:0:0.1" AccelerationRatio="0" DecelerationRatio="0" 
+                                                                                        Storyboard.TargetProperty="Fill.Color" To="{StaticResource OverColor}"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="Disabled"/>
+                                                            </VisualStateGroup>
+                                                        </VisualStateManager.VisualStateGroups>
+                                                    </Ellipse>
+
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton x:Name="PART_RBL" Command="Slider.DecreaseLarge" SnapsToDevicePixels="True" OverridesDefaultStyle="True" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border SnapsToDevicePixels="True" Background="{StaticResource OverBrush}" Width="4"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.DecreaseRepeatButton>
+                                </Track>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius"
+                    Value="22"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="Width" Value="44"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="FontSize" Value="22"/>
+        </Style>
+
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="OPEN" Command="ApplicationCommands.Open" FontSize="11"/>
+            <Button Content="▶" Click="playClick" x:Name="btnPlay"/>
+            <Button Content="■" Click="stopClick"/>
+            <Label Content="{Binding
+                ElementName=sldPosition,
+                Path=Value,
+                Converter={StaticResource millisecondsconverter}}"
+                   VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22"/>
+        </StackPanel>
+
+        <Slider Grid.Column="1" VerticalAlignment="Center" x:Name="sldPosition" LostMouseCapture="sldPosition_LostMouseCapture"/>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <Label Content="{Binding ElementName=sldPosition,
+                Path=Maximum,
+                Converter={StaticResource millisecondsconverter}}"
+                   VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22"/>
+            <Button Content="🔊" Click="volumeClick"/>
+            <Slider VerticalAlignment="Center" Width="100" Minimum="0" Maximum="1000" Value="99" x:Name="sldVolume"/>
+            <Label Width="66" Content="{Binding
+                ElementName=sldVolume,
+                Path=Value,
+                Converter={StaticResource onetenth}}"
+                   FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>
